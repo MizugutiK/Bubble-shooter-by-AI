@@ -60,11 +60,14 @@ function createBubble() {
 }
 
 function handleBubbleCollision(playerBubble, randomBubble) {
+    // バブルの色のIDを取得
+    const randomColorIndex = getBubbleColorIndex(randomBubble.color); 
     if (playerColorIndex === randomColorIndex) {
         // 同じ色のバブルにぶつかった場合、バブルをプレイヤーにくっつける
         randomBubble.x = playerBubble.x;
         randomBubble.y = playerBubble.y - playerBubble.radius * 2;
-    } else {
+    } 
+    else {
         // 異なる色のバブルにぶつかった場合、ゲームオーバー
         gameOver();
     }
@@ -83,7 +86,7 @@ function drawBubbles() {
       
 
         if (isColliding(bubble, player)) {
-             gameOver();
+            handleBubbleCollision(player, bubble);
         }
 
         if (bubble.y + bubble.radius < 0) {
