@@ -8,6 +8,9 @@ let bubbles = [];
 const bubbleColorIndexes = {}; // 各色に対応する番号を格納するオブジェクト
 // プレイヤーの下に追加されたバブルを管理する配列
 let playerBubbles = [];
+let gameRunning = false; // ゲームが実行中かどうかを示すフラグ
+let animationId; // requestAnimationFrame の ID を格納する変数
+let bubbleIntervalId; // setInterval の ID を格納する変数
 
 // 各色に対応する番号を付与する
 bubbleColors.forEach((color, index) => {
@@ -17,6 +20,22 @@ bubbleColors.forEach((color, index) => {
 // 各色に対応する番号を取得する関数
 function getBubbleColorIndex(color) {
     return bubbleColorIndexes[color];
+}
+function startGame() {
+    const gameMessage = document.getElementById('gameMessage');
+    gameMessage.textContent = 'クリックしてスタート';
+    gameMessage.style.display = "block"; // メッセージを表示
+
+
+    canvas.addEventListener('click', function () {
+        // ゲームが実行中でない場合のみゲームを開始する
+        if (!gameRunning) {
+            gameRunning = true;
+            gameLoop();
+            bubbleIntervalId = setInterval(createBubble, 1000);
+            gameMessage.style.display = "none"; 
+        }
+    });
 }
 
 const player = {
@@ -29,12 +48,15 @@ const player = {
 const playerColorIndex = getBubbleColorIndex(player.color);
 
 function gameLoop() {
-    clearCanvas();
+   
+    if (gameRunning) {
+    clearCanvas(); 
     drawPlayer();
     drawPlayerBubbles();
     drawBubbles();
-    requestAnimationFrame(gameLoop);
-}
+    animationId = requestAnimationFrame(gameLoop);
+    }
+}   
 
 function handleKeyPress(event) {
     if (event.key === 'ArrowLeft' && player.x > bubbleRadius) {
@@ -57,7 +79,6 @@ document.addEventListener('keydown', handleKeyPress);
 
 function createBubble() {
     const randomColor = bubbleColors[Math.floor(Math.random() * bubbleColors.length)];
-
 
     const bubble = {
         x: Math.random() * canvasWidth,
@@ -143,9 +164,13 @@ function clearCanvas() {
 }
 
 function gameOver() {
-    alert("Game Over!");
-    // ゲームオーバー時の処理を追加する場合はここに記述
+    // alert("Game Over!");
+    cancelAnimationFrame(animationId); // アニメーションを停止する
+    clearInterval(bubbleIntervalId); // setInterval の実行を停止する
+    const gameMessage = document.getElementById('gameMessage');
+    gameMessage.textContent = 'ゲームオーバー';
+    gameMessage.style.display = "block"; // メッセージを表示
+    gameRunning = false;
 }
 
-setInterval(createBubble, 1000);
-gameLoop();
+startGame();
