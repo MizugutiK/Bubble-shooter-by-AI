@@ -6,6 +6,8 @@ const bubbleRadius = 20;
 const bubbleColors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff'];
 let bubbles = [];
 const bubbleColorIndexes = {}; // 各色に対応する番号を格納するオブジェクト
+// プレイヤーの下に追加されたバブルを管理する配列
+let playerBubbles = [];
 
 // 各色に対応する番号を付与する
 bubbleColors.forEach((color, index) => {
@@ -29,6 +31,7 @@ const playerColorIndex = getBubbleColorIndex(player.color);
 function gameLoop() {
     clearCanvas();
     drawPlayer();
+    drawPlayerBubbles();
     drawBubbles();
     requestAnimationFrame(gameLoop);
 }
@@ -36,11 +39,19 @@ function gameLoop() {
 function handleKeyPress(event) {
     if (event.key === 'ArrowLeft' && player.x > bubbleRadius) {
         player.x -= 5;
+        // プレイヤーが移動したときに、newBubble もプレイヤーに追随するように位置を更新する
+        playerBubbles.forEach(bubble => {
+            bubble.x -= 5;
+        });
     } else if (event.key === 'ArrowRight' && player.x < canvasWidth - bubbleRadius) {
         player.x += 5;
+        // プレイヤーが移動したときに、newBubble もプレイヤーに追随するように位置を更新する
+        playerBubbles.forEach(bubble => {
+            bubble.x += 5;
+        });
     }
-
 }
+
 
 document.addEventListener('keydown', handleKeyPress);
 
@@ -63,14 +74,33 @@ function handleBubbleCollision(playerBubble, randomBubble) {
     // バブルの色のIDを取得
     const randomColorIndex = getBubbleColorIndex(randomBubble.color); 
     if (playerColorIndex === randomColorIndex) {
-        // 同じ色のバブルにぶつかった場合、バブルをプレイヤーにくっつける
-        randomBubble.x = playerBubble.x;
-        randomBubble.y = playerBubble.y - playerBubble.radius * 2;
-    } 
+        // 同じ色のバブルにぶつかった場合、新しいバブルを追加する
+        const newBubble = {
+            x: playerBubble.x,
+            y: playerBubble.y , // プレイヤーの下に追加
+            radius: bubbleRadius,
+            color: randomBubble.color
+        };
+      
+        player.y -= bubbleRadius * 2; 
+        playerBubbles.push(newBubble);
+        // 衝突したバブルを配列から削除する
+        bubbles.splice(bubbles.indexOf(randomBubble), 1);
+    }  
     else {
         // 異なる色のバブルにぶつかった場合、ゲームオーバー
         gameOver();
     }
+}
+
+function drawPlayerBubbles() {
+    playerBubbles.forEach((bubble, index) => {
+        ctx.beginPath();
+        ctx.arc(bubble.x, bubble.y, bubble.radius, 0, Math.PI * 2);
+        ctx.fillStyle = bubble.color;
+        ctx.fill();
+        ctx.closePath();
+    });
 }
 
 
@@ -82,8 +112,7 @@ function drawBubbles() {
         ctx.fill();
         ctx.closePath();
 
-        bubble.y += 1; // バブルを上に移動
-      
+        bubble.y += 1; 
 
         if (isColliding(bubble, player)) {
             handleBubbleCollision(player, bubble);
@@ -94,6 +123,7 @@ function drawBubbles() {
         }
     });
 }
+
 
 function drawPlayer() {
     ctx.beginPath();
