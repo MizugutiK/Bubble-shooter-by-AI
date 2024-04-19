@@ -12,6 +12,7 @@ let gameRunning = false; // ゲームが実行中かどうかを示すフラグ
 let animationId; // requestAnimationFrame の ID を格納する変数
 let bubbleIntervalId; // setInterval の ID を格納する変数
 
+
 // 各色に対応する番号を付与する
 bubbleColors.forEach((color, index) => {
     bubbleColorIndexes[color] = index;
