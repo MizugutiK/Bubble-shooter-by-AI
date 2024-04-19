@@ -176,12 +176,17 @@ function gameOver() {
       // クリックしたらゲーム再開
     canvas.addEventListener('click', startGameOnce);
     bubbles = [];
+      // プレイヤーが保持しているバブルの配列を空にする
+      playerBubbles = [];
+      // ゲームを再開する前にプレイヤーのY座標を初期位置に戻す
+      player.y = canvasHeight - bubbleRadius * 2;
 }
+
 function startGameOnce() {
     // イベントリスナーを一度だけ実行するため、一度呼び出したらリスナーを削除する
     canvas.removeEventListener('click', startGameOnce);
     gameRunning = false;
- 
+  
     // ゲームを再開する
     startGame();
 }
