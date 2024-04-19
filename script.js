@@ -57,9 +57,7 @@ document.addEventListener('keydown', handleKeyPress);
 
 function createBubble() {
     const randomColor = bubbleColors[Math.floor(Math.random() * bubbleColors.length)];
-    const randomColorIndex = getBubbleColorIndex(randomColor); // バブルの色のIDを取得
-    console.log("Player Color ID:", playerColorIndex);
-    console.log("Random Bubble Color ID:", randomColorIndex);
+
 
     const bubble = {
         x: Math.random() * canvasWidth,

@@ -2,10 +2,13 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
     margin: 0;
 }
 
 #gameCanvas {
     border: 2px solid black;
+}
+#gameMessage{
+    display: none;
+    position: absolute;
 }
