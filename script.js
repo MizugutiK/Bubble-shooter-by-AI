@@ -11,7 +11,7 @@ let playerBubbles = [];
 let gameRunning = false; // ゲームが実行中かどうかを示すフラグ
 let animationId; // requestAnimationFrame の ID を格納する変数
 let bubbleIntervalId; // setInterval の ID を格納する変数
-
+startGame();
 
 // 各色に対応する番号を付与する
 bubbleColors.forEach((color, index) => {
@@ -22,6 +22,7 @@ bubbleColors.forEach((color, index) => {
 function getBubbleColorIndex(color) {
     return bubbleColorIndexes[color];
 }
+
 function startGame() {
     const gameMessage = document.getElementById('gameMessage');
     gameMessage.textContent = 'クリックしてスタート';
@@ -165,13 +166,24 @@ function clearCanvas() {
 }
 
 function gameOver() {
-    // alert("Game Over!");
+    
     cancelAnimationFrame(animationId); // アニメーションを停止する
     clearInterval(bubbleIntervalId); // setInterval の実行を停止する
     const gameMessage = document.getElementById('gameMessage');
     gameMessage.textContent = 'ゲームオーバー';
     gameMessage.style.display = "block"; // メッセージを表示
     gameRunning = false;
+      // クリックしたらゲーム再開
+    canvas.addEventListener('click', startGameOnce);
+    bubbles = [];
+}
+function startGameOnce() {
+    // イベントリスナーを一度だけ実行するため、一度呼び出したらリスナーを削除する
+    canvas.removeEventListener('click', startGameOnce);
+    gameRunning = false;
+ 
+    // ゲームを再開する
+    startGame();
 }
 
-startGame();
+
