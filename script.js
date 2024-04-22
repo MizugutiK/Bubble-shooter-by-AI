@@ -126,6 +126,9 @@ function handleBubbleCollision(playerBubble, randomBubble) {
 // randomColorIndexをログに表示
     console.log("Random bubble color index:", randomColorIndex); 
 
+    const Up = document.getElementById('Up');
+    const But = document.getElementById('But');
+
     if (playerColorIndex === randomColorIndex) {
         // 同じ色のバブルにぶつかった場合、新しいバブルを追加する
         const newBubble = {
@@ -141,6 +144,8 @@ function handleBubbleCollision(playerBubble, randomBubble) {
         // スコアを増やす
         score++;
         updateScore(); // スコアを更新する
+
+        Up.play(); // SE1再生
     } else {
         // 異なる色のバブルにぶつかった場合、プレイヤーを初期位置に戻す
         player.y = canvasHeight - bubbleRadius * 2;
@@ -151,6 +156,8 @@ function handleBubbleCollision(playerBubble, randomBubble) {
         playerBubbles = [];
         // 衝突したバブルを配列から削除する
         bubbles.splice(bubbles.indexOf(randomBubble), 1);
+
+        But.play(); // SE1再生
     }
 }
 
@@ -204,13 +211,17 @@ function clearCanvas() {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 }
 
+const ClearSE = document.getElementById('ClearSE');
+
+
 function gameOver() {
+    ClearSE.play(); // SE1再生
     // タイマーを停止する
     clearTimeout(timerId);
     cancelAnimationFrame(animationId); // アニメーションを停止する
     clearInterval(bubbleIntervalId); // setInterval の実行を停止する
     const gameMessage = document.getElementById('gameMessage');
-    gameMessage.textContent = 'ゲーム終了'<br>'クリックして最初から';
+    gameMessage.textContent = 'ゲーム終了<br>クリックして最初から';
     gameMessage.style.display = "block"; // メッセージを表示
     gameRunning = false;
       // クリックしたらゲーム再開
