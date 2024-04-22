@@ -3,7 +3,8 @@ const ctx = canvas.getContext('2d');
 const canvasWidth = canvas.width = 800;
 const canvasHeight = canvas.height = 600;
 const bubbleRadius = 20;
-const bubbleColors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff'];
+// 赤　緑　青　オレンジ　紫
+const bubbleColors = ['#ff7f7f', '#7fff7f', '#7fbfff', '#ffbf7f', '#bf7fff'];
 let bubbles = [];
 // 各色に対応する番号を格納するオブジェクト
 const bubbleColorIndexes = {}; 
@@ -44,7 +45,7 @@ startGame();
 
 function updateTimer() {
     const timerElement = document.getElementById('timer');
-    timerElement.textContent = 'Time left: ' + timeLeft;
+    timerElement.textContent = 'Time: ' + timeLeft;
     
     if (timeLeft > 0) {
         timeLeft--;
@@ -149,9 +150,12 @@ function handleBubbleCollision(playerBubble, randomBubble) {
         bubbles.splice(bubbles.indexOf(randomBubble), 1);
         // スコアを増やす
         score++;
-        updateScore(); // スコアを更新する
-
-        Up.play(); // SE1再生
+        // スコアを更新する
+        updateScore();
+        // 再生位置をリセット
+        Up.currentTime = 0; 
+        // SE1再生
+        Up.play(); 
     } else {
         // 異なる色のバブルにぶつかった場合、プレイヤーを初期位置に戻す
         player.y = canvasHeight - bubbleRadius * 2;
@@ -162,8 +166,10 @@ function handleBubbleCollision(playerBubble, randomBubble) {
         playerBubbles = [];
         // 衝突したバブルを配列から削除する
         bubbles.splice(bubbles.indexOf(randomBubble), 1);
-
-        But.play(); // SE1再生
+        // 再生位置をリセット
+        But.currentTime = 0; 
+        // SE1再生
+        But.play(); 
     }
 }
 
@@ -192,7 +198,8 @@ function drawBubbles() {
         }
 
         if (bubble.y + bubble.radius < 0) {
-            bubbles.splice(index, 1); // 画面上部から出たバブルを配列から削除
+            // 画面上部から出たバブルを配列から削除
+            bubbles.splice(index, 1); 
         }
 
     });
@@ -224,11 +231,14 @@ function gameOver() {
     ClearSE.play(); // SE1再生
     // タイマーを停止する
     clearTimeout(timerId);
-    cancelAnimationFrame(animationId); // アニメーションを停止する
-    clearInterval(bubbleIntervalId); // setInterval の実行を停止する
+// アニメーションを停止する
+    cancelAnimationFrame(animationId); 
+    // setInterval の実行を停止する
+    clearInterval(bubbleIntervalId); 
     const gameMessage = document.getElementById('gameMessage');
     gameMessage.textContent = 'ゲーム終了<br>クリックして最初から';
-    gameMessage.style.display = "block"; // メッセージを表示
+    // メッセージを表示
+    gameMessage.style.display = "block"; 
     gameRunning = false;
       // クリックしたらゲーム再開
     canvas.addEventListener('click', startGameOnce);
