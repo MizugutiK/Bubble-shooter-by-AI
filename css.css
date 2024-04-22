@@ -12,3 +12,7 @@ body {
     display: none;
     position: absolute;
 }
+
+#score{
+    position: absolute;
+}

@@ -11,7 +11,9 @@ let playerBubbles = [];
 let gameRunning = false; // ゲームが実行中かどうかを示すフラグ
 let animationId; // requestAnimationFrame の ID を格納する変数
 let bubbleIntervalId; // setInterval の ID を格納する変数
-startGame();
+let score = 0;
+
+
 
 // 各色に対応する番号を付与する
 bubbleColors.forEach((color, index) => {
@@ -23,10 +25,32 @@ function getBubbleColorIndex(color) {
     return bubbleColorIndexes[color];
 }
 
+// プレイヤーの色をランダムに選択する
+let player = {
+    x: canvasWidth / 2,
+    y: canvasHeight - bubbleRadius * 2,
+    radius: bubbleRadius,
+    color: bubbleColors[Math.floor(Math.random() * bubbleColors.length)]
+};
+let playerColorIndex = getBubbleColorIndex(player.color); // playerColorIndex をここで設定
+
+// console.log("Player color index:", playerColorIndex);
+// console.log("Bubble color indexes:", bubbleColorIndexes);
+startGame();
+
+ player.color = bubbleColors[Math.floor(Math.random() * bubbleColors.length)];
+
 function startGame() {
     const gameMessage = document.getElementById('gameMessage');
     gameMessage.textContent = 'クリックしてスタート';
     gameMessage.style.display = "block"; // メッセージを表示
+    
+    // プレイヤーの色をセットし、その色のインデックスを取得
+   
+    playerColorIndex = getBubbleColorIndex(player.color);
+
+console.log("Bubble color indexes:", bubbleColorIndexes);
+console.log("Player color index:", playerColorIndex);
 
 
     canvas.addEventListener('click', function () {
@@ -36,27 +60,20 @@ function startGame() {
             gameLoop();
             bubbleIntervalId = setInterval(createBubble, 1000);
             gameMessage.style.display = "none"; 
+            // 1分後にゲーム終了
+            setTimeout(gameOver, 60000); // 1分 = 60秒 = 60000ミリ秒
         }
     });
 }
 
-const player = {
-    x: canvasWidth / 2,
-    y: canvasHeight - bubbleRadius * 2,
-    radius: bubbleRadius,
-    color: bubbleColors[Math.floor(Math.random() * bubbleColors.length)] // プレイヤーの色をランダムに選択
-};
-
-const playerColorIndex = getBubbleColorIndex(player.color);
 
 function gameLoop() {
-   
     if (gameRunning) {
-    clearCanvas(); 
-    drawPlayer();
-    drawPlayerBubbles();
-    drawBubbles();
-    animationId = requestAnimationFrame(gameLoop);
+        clearCanvas(); 
+        drawPlayer();
+        drawPlayerBubbles();
+        drawBubbles();
+        animationId = requestAnimationFrame(gameLoop);
     }
 }   
 
@@ -76,7 +93,6 @@ function handleKeyPress(event) {
     }
 }
 
-
 document.addEventListener('keydown', handleKeyPress);
 
 function createBubble() {
@@ -88,29 +104,42 @@ function createBubble() {
         radius: bubbleRadius,
         color: randomColor
     };
+    
     bubbles.push(bubble);
 }
+
 
 function handleBubbleCollision(playerBubble, randomBubble) {
     // バブルの色のIDを取得
     const randomColorIndex = getBubbleColorIndex(randomBubble.color); 
+// randomColorIndexをログに表示
+    console.log("Random bubble color index:", randomColorIndex); 
+
     if (playerColorIndex === randomColorIndex) {
         // 同じ色のバブルにぶつかった場合、新しいバブルを追加する
         const newBubble = {
             x: playerBubble.x,
             y: playerBubble.y , // プレイヤーの下に追加
             radius: bubbleRadius,
-            color: randomBubble.color
+            color: player.color // プレイヤーの色と同じ色に設定する
         };
-      
         player.y -= bubbleRadius * 2; 
         playerBubbles.push(newBubble);
         // 衝突したバブルを配列から削除する
         bubbles.splice(bubbles.indexOf(randomBubble), 1);
-    }  
-    else {
-        // 異なる色のバブルにぶつかった場合、ゲームオーバー
-        gameOver();
+        // スコアを増やす
+        score++;
+        updateScore(); // スコアを更新する
+    } else {
+        // 異なる色のバブルにぶつかった場合、プレイヤーを初期位置に戻す
+        player.y = canvasHeight - bubbleRadius * 2;
+        // プレイヤーの色をランダムに選択する
+        player.color = bubbleColors[Math.floor(Math.random() * bubbleColors.length)];
+        playerColorIndex = getBubbleColorIndex(player.color);
+        // プレイヤーが保持しているバブルの配列を空にする
+        playerBubbles = [];
+        // 衝突したバブルを配列から削除する
+        bubbles.splice(bubbles.indexOf(randomBubble), 1);
     }
 }
 
@@ -123,7 +152,6 @@ function drawPlayerBubbles() {
         ctx.closePath();
     });
 }
-
 
 function drawBubbles() {
     bubbles.forEach((bubble, index) => {
@@ -142,9 +170,9 @@ function drawBubbles() {
         if (bubble.y + bubble.radius < 0) {
             bubbles.splice(index, 1); // 画面上部から出たバブルを配列から削除
         }
+
     });
 }
-
 
 function drawPlayer() {
     ctx.beginPath();
@@ -170,7 +198,7 @@ function gameOver() {
     cancelAnimationFrame(animationId); // アニメーションを停止する
     clearInterval(bubbleIntervalId); // setInterval の実行を停止する
     const gameMessage = document.getElementById('gameMessage');
-    gameMessage.textContent = 'ゲームオーバー';
+    gameMessage.textContent = 'ゲーム終了<br>スコア：';+score;
     gameMessage.style.display = "block"; // メッセージを表示
     gameRunning = false;
       // クリックしたらゲーム再開
@@ -190,5 +218,7 @@ function startGameOnce() {
     // ゲームを再開する
     startGame();
 }
-
-
+function updateScore() {
+    const scoreElement = document.getElementById('score');
+    scoreElement.textContent = 'Score: ' + score;
+}
