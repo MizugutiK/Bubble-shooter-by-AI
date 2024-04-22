@@ -5,14 +5,19 @@ const canvasHeight = canvas.height = 600;
 const bubbleRadius = 20;
 const bubbleColors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff'];
 let bubbles = [];
-const bubbleColorIndexes = {}; // 各色に対応する番号を格納するオブジェクト
+// 各色に対応する番号を格納するオブジェクト
+const bubbleColorIndexes = {}; 
 // プレイヤーの下に追加されたバブルを管理する配列
 let playerBubbles = [];
-let gameRunning = false; // ゲームが実行中かどうかを示すフラグ
-let animationId; // requestAnimationFrame の ID を格納する変数
-let bubbleIntervalId; // setInterval の ID を格納する変数
+// ゲームが実行中かどうかを示すフラグ
+let gameRunning = false; 
+// requestAnimationFrame の ID を格納する変数
+let animationId; 
+// setInterval の ID を格納する変数
+let bubbleIntervalId; 
 let score = 0;
-let timeLeft = 60; // ゲームの制限時間（秒）
+// ゲームの制限時間（秒）
+let timeLeft = 60; 
 
 
 // 各色に対応する番号を付与する
@@ -32,10 +37,9 @@ let player = {
     radius: bubbleRadius,
     color: bubbleColors[Math.floor(Math.random() * bubbleColors.length)]
 };
-let playerColorIndex = getBubbleColorIndex(player.color); // playerColorIndex をここで設定
+// ゲーム開始時にインデックスを設定するので、ここで初期化のみ
+let playerColorIndex; 
 
-// console.log("Player color index:", playerColorIndex);
-// console.log("Bubble color indexes:", bubbleColorIndexes);
 startGame();
 
 function updateTimer() {
@@ -44,13 +48,15 @@ function updateTimer() {
     
     if (timeLeft > 0) {
         timeLeft--;
-        timerId = setTimeout(updateTimer, 1000); // 1秒ごとに時間を更新
+        // 1秒ごとに時間を更新
+        timerId = setTimeout(updateTimer, 1000); 
     } else {
-        gameOver(); // 時間切れ時にゲーム終了処理を実行
+        // 時間切れ時にゲーム終了処理を実行
+        gameOver(); 
     }
 }
 
- player.color = bubbleColors[Math.floor(Math.random() * bubbleColors.length)];
+//  player.color = bubbleColors[Math.floor(Math.random() * bubbleColors.length)];
 
 function startGame() {
     const gameMessage = document.getElementById('gameMessage');
@@ -58,7 +64,7 @@ function startGame() {
     gameMessage.style.display = "block"; // メッセージを表示
     
     // プレイヤーの色をセットし、その色のインデックスを取得
-   
+    player.color = bubbleColors[Math.floor(Math.random() * bubbleColors.length)];
     playerColorIndex = getBubbleColorIndex(player.color);
 
 console.log("Bubble color indexes:", bubbleColorIndexes);
