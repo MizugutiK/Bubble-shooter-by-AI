@@ -12,7 +12,7 @@ let gameRunning = false; // ゲームが実行中かどうかを示すフラグ
 let animationId; // requestAnimationFrame の ID を格納する変数
 let bubbleIntervalId; // setInterval の ID を格納する変数
 let score = 0;
-
+let timeLeft = 60; // ゲームの制限時間（秒）
 
 
 // 各色に対応する番号を付与する
@@ -38,6 +38,18 @@ let playerColorIndex = getBubbleColorIndex(player.color); // playerColorIndex �
 // console.log("Bubble color indexes:", bubbleColorIndexes);
 startGame();
 
+function updateTimer() {
+    const timerElement = document.getElementById('timer');
+    timerElement.textContent = 'Time left: ' + timeLeft;
+    
+    if (timeLeft > 0) {
+        timeLeft--;
+        timerId = setTimeout(updateTimer, 1000); // 1秒ごとに時間を更新
+    } else {
+        gameOver(); // 時間切れ時にゲーム終了処理を実行
+    }
+}
+
  player.color = bubbleColors[Math.floor(Math.random() * bubbleColors.length)];
 
 function startGame() {
@@ -50,7 +62,7 @@ function startGame() {
     playerColorIndex = getBubbleColorIndex(player.color);
 
 console.log("Bubble color indexes:", bubbleColorIndexes);
-console.log("Player color index:", playerColorIndex);
+ console.log("Player color index:", playerColorIndex);
 
 
     canvas.addEventListener('click', function () {
@@ -60,8 +72,7 @@ console.log("Player color index:", playerColorIndex);
             gameLoop();
             bubbleIntervalId = setInterval(createBubble, 1000);
             gameMessage.style.display = "none"; 
-            // 1分後にゲーム終了
-            setTimeout(gameOver, 60000); // 1分 = 60秒 = 60000ミリ秒
+            updateTimer();
         }
     });
 }
@@ -194,11 +205,12 @@ function clearCanvas() {
 }
 
 function gameOver() {
-    
+    // タイマーを停止する
+    clearTimeout(timerId);
     cancelAnimationFrame(animationId); // アニメーションを停止する
     clearInterval(bubbleIntervalId); // setInterval の実行を停止する
     const gameMessage = document.getElementById('gameMessage');
-    gameMessage.textContent = 'ゲーム終了<br>スコア：';+score;
+    gameMessage.textContent = 'ゲーム終了'<br>'クリックして最初から';
     gameMessage.style.display = "block"; // メッセージを表示
     gameRunning = false;
       // クリックしたらゲーム再開
