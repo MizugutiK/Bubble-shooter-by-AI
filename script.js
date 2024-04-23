@@ -130,11 +130,17 @@ function createBubble() {
 function handleBubbleCollision(playerBubble, randomBubble) {
     // バブルの色のIDを取得
     const randomColorIndex = getBubbleColorIndex(randomBubble.color); 
-// randomColorIndexをログに表示
+    // randomColorIndexをログに表示
     console.log("Random bubble color index:", randomColorIndex); 
 
     const Up = document.getElementById('Up');
+    // 音量を半分に設定する例
+    Up.volume = 0.5; 
     const But = document.getElementById('But');
+    // 音量を半分に設定する例
+    But.volume = 0.5; 
+    // scoreIncrement を宣言
+    let scoreIncrement; 
 
     if (playerColorIndex === randomColorIndex) {
         // 同じ色のバブルにぶつかった場合、新しいバブルを追加する
@@ -148,10 +154,18 @@ function handleBubbleCollision(playerBubble, randomBubble) {
         playerBubbles.push(newBubble);
         // 衝突したバブルを配列から削除する
         bubbles.splice(bubbles.indexOf(randomBubble), 1);
-        // スコアを増やす
-        score++;
+        // 新しいバブルの数を数える
+        const newBubbleCount = playerBubbles.length;
+
+        // スコアの基準値に新しいバブルの数を加算
+        scoreIncrement =100 * newBubbleCount;
+
+        // スコアに反映
+        score += scoreIncrement;
+
         // スコアを更新する
         updateScore();
+    
         // 再生位置をリセット
         Up.currentTime = 0; 
         // SE1再生
@@ -166,12 +180,16 @@ function handleBubbleCollision(playerBubble, randomBubble) {
         playerBubbles = [];
         // 衝突したバブルを配列から削除する
         bubbles.splice(bubbles.indexOf(randomBubble), 1);
+        // 異なる色のバブルに触れたので、スコアの上がり方を初期化する
+        scoreIncrement = 0; // ここで初期化する
         // 再生位置をリセット
         But.currentTime = 0; 
         // SE1再生
         But.play(); 
     }
+    
 }
+
 
 function drawPlayerBubbles() {
     playerBubbles.forEach((bubble, index) => {
@@ -228,7 +246,10 @@ const ClearSE = document.getElementById('ClearSE');
 
 
 function gameOver() {
-    ClearSE.play(); // SE1再生
+    // 音量を半分に設定する例
+    ClearSE.volume = 0.75; 
+    // SE1再生
+    ClearSE.play(); 
     // タイマーを停止する
     clearTimeout(timerId);
 // アニメーションを停止する
@@ -236,7 +257,8 @@ function gameOver() {
     // setInterval の実行を停止する
     clearInterval(bubbleIntervalId); 
     const gameMessage = document.getElementById('gameMessage');
-    gameMessage.textContent = 'ゲーム終了<br>クリックして最初から';
+    gameMessage.innerHTML = 'ゲーム終了<br> <br><span style="font-size: 30px;">スコア: ' + score + '</span><br> <br>クリックして最初から';
+
     // メッセージを表示
     gameMessage.style.display = "block"; 
     gameRunning = false;
