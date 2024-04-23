@@ -10,6 +10,7 @@ body {
     background-color: black;
 }
 #gameMessage{
+    text-align: center;
     display: none;
     position: absolute;
     color: aliceblue;
@@ -22,20 +23,30 @@ body {
     left: 50%; /* 左端からの距離をブラウザの中央に合わせる */
     transform: translateX(-50%); /* ブラウザの中央に配置 */
     text-align: center;
+    font-weight: bold; /* 太字にする */
 }
 #timer{
     color: rgb(0, 81, 151);
-    bottom: 30%; /* ビューポートの下端からの距離を設定 */
+    bottom: 32%; /* ビューポートの下端からの距離を設定 */
     left: 50%; /* 左端からの距離をブラウザの中央に合わせる */
     transform: translateX(-50%); /* ブラウザの中央に配置 */
     position: absolute;
     text-align: center;
+    font-weight: bold; /* 太字にする */
 }
-#Credit{
-    /* 要素の位置を絶対位置に設定 */
+#Readme{
+     /* 下部からの距離を調整 */
+     bottom: 200px;
     position: absolute; 
-    /* 下部からの距離を調整 */
-    bottom: 100px;
+    text-align: left;
+    /* width: 100%; */
+    
+}
+
+#Credit{
+    position: absolute; 
+    bottom: 50px;
+    left: 50%; /* ブラウザの中央に移動 */
+    transform: translateX(-50%); /* ブラウザの中央に配置 */
     text-align: center;
-   
 }
