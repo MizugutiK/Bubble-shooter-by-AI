@@ -27,7 +27,7 @@ body {
 }
 #timer{
     color: rgb(0, 81, 151);
-    bottom: 32%; /* ビューポートの下端からの距離を設定 */
+    bottom: 30%; /* ビューポートの下端からの距離を設定 */
     left: 50%; /* 左端からの距離をブラウザの中央に合わせる */
     transform: translateX(-50%); /* ブラウザの中央に配置 */
     position: absolute;
